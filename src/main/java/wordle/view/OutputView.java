@@ -1,5 +1,6 @@
 package wordle.view;
 
+import wordle.domain.Attempt;
 import wordle.domain.Results;
 
 public interface OutputView {
@@ -10,4 +11,5 @@ public interface OutputView {
     void wrongWord();
 
     void showResults(final Results results, final int attempt, final int maxAttempt);
+    void showResults(final Results results, final Attempt round);
 }

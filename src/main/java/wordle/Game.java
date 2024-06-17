@@ -4,8 +4,6 @@ import wordle.domain.*;
 import wordle.view.InputView;
 import wordle.view.OutputView;
 
-import java.util.stream.IntStream;
-
 public class Game {
     private static final int START_ATTEMPT = 0;
     private static final int MAX_ATTEMPT = 6;
@@ -26,23 +24,18 @@ public class Game {
         final WordList wordList = wordListReader.read();
         final Answer answer = new Answer(wordList.select(wordSelector));
         outputView.welcome(MAX_ATTEMPT);
-        execute(wordList, answer);
+        play(wordList, answer, new Attempt(START_ATTEMPT, MAX_ATTEMPT), new Results());
     }
 
-    private void execute(final WordList wordList, final Answer answer) {
-        final Results results = new Results();
-        IntStream.range(START_ATTEMPT, MAX_ATTEMPT)
-                .boxed()
-                .takeWhile(attempt -> !results.hasAnswer())
-                .forEach(attempt -> {
-                    results.add(examine(wordList, answer));
-                    outputView.showResults(results, attempt, MAX_ATTEMPT);
-                });
-    }
-
-    private Result examine(final WordList wordList, final Answer answer) {
-        final Guess guess = inputWord(wordList);
-        return answer.examineResult(guess);
+    private void play(final WordList wordList, final Answer answer, final Attempt attempt, final Results results) {
+        if (attempt.isNotFinished() && !results.hasAnswer()) {
+            final Guess guess = inputWord(wordList);
+            final Result result = answer.examineResult(guess);
+            final Results newResults = results.add(result);
+            final Attempt newAttempt = attempt.next();
+            outputView.showResults(newResults, newAttempt);
+            play(wordList, answer, newAttempt, newResults);
+        }
     }
 
     private Guess inputWord(final WordList wordList) {
@@ -56,8 +49,3 @@ public class Game {
         }
     }
 }
-
-
-
-
-

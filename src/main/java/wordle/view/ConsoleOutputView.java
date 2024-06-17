@@ -1,5 +1,6 @@
 package wordle.view;
 
+import wordle.domain.Attempt;
 import wordle.domain.Results;
 
 import java.util.stream.Collectors;
@@ -40,5 +41,10 @@ public class ConsoleOutputView implements OutputView {
                 ).collect(Collectors.joining("\n"));
 
         System.out.println(resultSentence);
+    }
+
+    @Override
+    public void showResults(final Results results, final Attempt round) {
+        showResults(results, round.current(), round.last());
     }
 }

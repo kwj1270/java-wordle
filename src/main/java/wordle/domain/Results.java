@@ -20,8 +20,9 @@ public class Results {
         return results.stream().anyMatch(Result::allMatched);
     }
 
-    public void add(final Result result) {
+    public Results add(final Result result) {
         results.add(result);
+        return new Results(this.results);
     }
 
     public int size() {
